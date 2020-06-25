@@ -76,37 +76,22 @@ def buildPotentials(index):
         if sudokuAr[x] in potentialsAr[index]:
             potentialsAr[index].remove(sudokuAr[x])
 
+def hiddenSingleCheck(selectAr):
+    potentialIndices = [[], [], [], [], [], [], [], [], [], []] 
+    for y in selectAr:
+        for z in potentialsAr[y]:
+            potentialIndices[z].append(y)
+    for y in range(1, 10):
+        if (len(potentialIndices[y]) == 1):
+            sudokuAr[potentialIndices[y][0]] = y
+            potentialsAr[potentialIndices[y][0]] = [y]
 
 def checkPuzzle():
     # for every row/col/box
     for x in range(9):
-
-        potentialIndices = [[], [], [], [], [], [], [], [], [], []] 
-        for y in rows[x]:
-            for z in potentialsAr[y]:
-                potentialIndices[z].append(y)
-        for y in range(1, 10):
-            if (len(potentialIndices[y]) == 1):
-                sudokuAr[potentialIndices[y][0]] = y
-                potentialsAr[potentialIndices[y][0]] = [y]
-
-        potentialIndices = [[], [], [], [], [], [], [], [], [], []] 
-        for y in cols[x]:
-            for z in potentialsAr[y]:
-                potentialIndices[z].append(y)
-        for y in range(1, 10):
-            if (len(potentialIndices[y]) == 1):
-                sudokuAr[potentialIndices[y][0]] = y
-                potentialsAr[potentialIndices[y][0]] = [y]
-
-        potentialIndices = [[], [], [], [], [], [], [], [], [], []] 
-        for y in boxes[x]:
-            for z in potentialsAr[y]:
-                potentialIndices[z].append(y)
-        for y in range(1, 10):
-            if (len(potentialIndices[y]) == 1):
-                sudokuAr[potentialIndices[y][0]] = y
-                potentialsAr[potentialIndices[y][0]] = [y]
+        hiddenSingleCheck(rows[x])
+        hiddenSingleCheck(cols[x])
+        hiddenSingleCheck(boxes[x])
 
     # go through each potentials list to clear out singles
     for x in range(81):
