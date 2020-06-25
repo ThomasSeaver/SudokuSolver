@@ -79,10 +79,26 @@ def buildPotentials(index):
 # check for conjugate triples
 def conjTripCheck(selectAr):
     # pull every potential triple and poll for tripleness
+    # ugly ugly u gly 
     for x in range(len(selectAr)):
-        for y in range(x + 1, len(selectAr)):
-            for z in range(y + 1, len(selectAr)):
-
+        if len(potentialsAr[selectAr[x]]) == 2 or len(potentialsAr[selectAr[x]]) == 3:
+            for y in range(x + 1, len(selectAr)):
+                if len(potentialsAr[selectAr[y]]) == 2 or len(potentialsAr[selectAr[y]]) == 3:
+                    for z in range(y + 1, len(selectAr)):
+                        if len(potentialsAr[selectAr[z]]) == 2 or len(potentialsAr[selectAr[z]]) == 3:
+                            # if we get to this point I know I have 3 cells with 2/3 length
+                            # if I add every unique from the three lists to one list and it is len 3 then I should meet condition
+                            # may not be perfect and could run into issues if conjugate pairs haven't been checked, but they should be 
+                            conjTrip = list(dict.fromkeys(potentialsAr[selectAr[x]] + potentialsAr[selectAr[y]] + potentialsAr[selectAr[z]]))
+                            if (len(conjTrip) == 3):
+                                for a in range(len(selectAr)):
+                                    if a != x and a != y and a != z:
+                                        if (potentialsAr[selectAr[a]].count(conjTrip[0]) > 0):
+                                            potentialsAr[selectAr[a]].remove(conjTrip[0])
+                                        if (potentialsAr[selectAr[a]].count(conjTrip[1]) > 0):
+                                            potentialsAr[selectAr[a]].remove(conjTrip[1])
+                                        if (potentialsAr[selectAr[a]].count(conjTrip[2]) > 0):
+                                            potentialsAr[selectAr[a]].remove(conjTrip[2])
 
 
 # check for conjugate pairs
@@ -128,19 +144,22 @@ def hiddenSingleCheck(selectAr):
             potentialsAr[potentialIndices[y][0]] = [y]
 
 def checkPuzzle():
-    # for every row/col/box
-    for x in range(9):
-        conjPairCheck(rows[x])
-        conjPairCheck(cols[x])
-        conjPairCheck(boxes[x])
-        hiddenSingleCheck(rows[x])
-        hiddenSingleCheck(cols[x])
-        hiddenSingleCheck(boxes[x])
-
     # go through each potentials list to clear out singles
     for x in range(81):
         if (sudokuAr[x] == 0 and len(potentialsAr[x]) == 1):
             sudokuAr[x] = potentialsAr[x][0]
+
+    # for every row/col/box
+    for x in range(9):
+        hiddenSingleCheck(rows[x])
+        hiddenSingleCheck(cols[x])
+        hiddenSingleCheck(boxes[x])
+        conjPairCheck(rows[x])
+        conjPairCheck(cols[x])
+        conjPairCheck(boxes[x])
+        conjTripCheck(rows[x])
+        conjTripCheck(cols[x])
+        conjTripCheck(boxes[x])
 
 
 def main():
@@ -159,15 +178,17 @@ def main():
     buildIndexHolders()
     solved = False
     old = []
+    oldPotentials = []
     index = 0
 
     while not solved:
         if (index > 80):
             checkPuzzle()
-            if old == sudokuAr:
+            if old == sudokuAr and oldPotentials == potentialsAr:
                 solved = True
             index = 0
             old = copy.deepcopy(sudokuAr)
+            oldPotentials = copy.deepcopy(potentialsAr)
         if (sudokuAr[index] == 0):
             buildPotentials(index)
         index += 1
