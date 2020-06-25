@@ -76,18 +76,37 @@ def buildPotentials(index):
         if sudokuAr[x] in potentialsAr[index]:
             potentialsAr[index].remove(sudokuAr[x])
 
+# check for conjugate triples
+def conjTripCheck(selectAr):
+    # pull every potential triple and poll for tripleness
+    for x in range(len(selectAr)):
+        for y in range(x + 1, len(selectAr)):
+            for z in range(y + 1, len(selectAr)):
+
+
+
 # check for conjugate pairs
+# if two squares are only num x and num y potentially, then they must be those numbers though we don't know which will be which
+# therefore we can remove these as options from the other squares
 def conjPairCheck(selectAr):
+    # definitely should probably just use like count or something for this but it might be more efficient idk
+    # just ugly this way
+    # go across unit
     for x in selectAr:
+        # if it has 2 elements in its potential, its got the option to be a naked pair
         if len(potentialsAr[x]) == 2:
+            # check across backhalf for a naked pair match
             for y in selectAr:
                 if x < y and potentialsAr[x] == potentialsAr[y]:
+                    # go across the unit again and if the naked pair's elements exist in the remaining units, clear them
                     for z in selectAr:
                         if x != z and y != z:
                             if (potentialsAr[z].count(potentialsAr[x][0]) > 0):
                                 potentialsAr[z].remove(potentialsAr[x][0])
                             if (potentialsAr[z].count(potentialsAr[x][1]) > 0):
                                 potentialsAr[z].remove(potentialsAr[x][1])
+
+
 
 
 # check for hidden singles
@@ -111,9 +130,9 @@ def hiddenSingleCheck(selectAr):
 def checkPuzzle():
     # for every row/col/box
     for x in range(9):
-        #conjPairCheck(rows[x])
-        #conjPairCheck(cols[x])
-        #conjPairCheck(boxes[x])
+        conjPairCheck(rows[x])
+        conjPairCheck(cols[x])
+        conjPairCheck(boxes[x])
         hiddenSingleCheck(rows[x])
         hiddenSingleCheck(cols[x])
         hiddenSingleCheck(boxes[x])
