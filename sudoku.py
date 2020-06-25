@@ -23,7 +23,7 @@ def printPuzzle():
 
 def convertString(sudokuString):
     for x in sudokuString:
-        if (x != 'M'):
+        if (x != '0'):
             sudokuAr.append(int(x))
             potentialsAr.append([int(x)])
         else:
@@ -122,9 +122,6 @@ def conjPairCheck(selectAr):
                             if (potentialsAr[z].count(potentialsAr[x][1]) > 0):
                                 potentialsAr[z].remove(potentialsAr[x][1])
 
-
-
-
 # check for hidden singles
 def hiddenSingleCheck(selectAr):
     # build potential indices list
@@ -169,10 +166,7 @@ def main():
     if len(enteredString) == 81:
         sudokuString = enteredString
     else:
-        sudokuString = "M9MMMM2MMMMMMM5M8MMM84MMM1MMM6MM13M5M5MMM97M64MM2MMMMMMMMMM2MM9734MMMMMMMMMM6MMMM"
-        #sudokuString = "M7M3M5MM9MMMMMM1M8MMMM9MMMMM3M4MMMMMM98MM2MM77M4MMM9MMMMMMMMMM5MMM68MM436MMMMMMMM"
-        #sudokuString = "378415962429763185561928374832M5749MMM6MMMM5MMMMMMMM18M8MMMMM3MM57M316M9MM3M4MMM7"
-        #sudokuString = "M27154396965M27148341689M525M34682714725M36896189724M578M23591415479M82323984156M"
+        sudokuString = "008500000000034000700060009600980103800000002109072004900020007000340000000006400"
     convertString(sudokuString)
     printPuzzle()
     buildIndexHolders()
@@ -181,8 +175,10 @@ def main():
     oldPotentials = []
     index = 0
 
+    frames = 0
     while not solved:
         if (index > 80):
+            frames += 1
             checkPuzzle()
             if old == sudokuAr and oldPotentials == potentialsAr:
                 solved = True
@@ -193,6 +189,7 @@ def main():
             buildPotentials(index)
         index += 1
 
+    print(frames)
     for i in range(9):
         print(str(potentialsAr[i*9]) + " " + str(potentialsAr[i*9+1]) + " " + str(potentialsAr[i*9+2]) + " " + str(potentialsAr[i*9+3]) + " " + str(potentialsAr[i*9+4]) + " " + str(potentialsAr[i*9+5]) + " " + str(potentialsAr[i*9+6]) + " " + str(potentialsAr[i*9+7]) + " " + str(potentialsAr[i*9+8]))
     printPuzzle()
