@@ -76,11 +76,33 @@ def buildPotentials(index):
         if sudokuAr[x] in potentialsAr[index]:
             potentialsAr[index].remove(sudokuAr[x])
 
+# check for conjugate pairs
+def conjPairCheck(selectAr):
+    for x in selectAr:
+        if len(potentialsAr[x]) == 2:
+            for y in selectAr:
+                if x < y and potentialsAr[x] == potentialsAr[y]:
+                    for z in selectAr:
+                        if x != z and y != z:
+                            if (potentialsAr[z].count(potentialsAr[x][0]) > 0):
+                                potentialsAr[z].remove(potentialsAr[x][0])
+                            if (potentialsAr[z].count(potentialsAr[x][1]) > 0):
+                                potentialsAr[z].remove(potentialsAr[x][1])
+
+
+# check for hidden singles
 def hiddenSingleCheck(selectAr):
+    # build potential indices list
+    # essentially go across each square inside unit
+    # if square has potential to be filled with number x
+    # insert that indice within the xth array within this list
     potentialIndices = [[], [], [], [], [], [], [], [], [], []] 
     for y in selectAr:
         for z in potentialsAr[y]:
             potentialIndices[z].append(y)
+
+    # if len of potential indice is 1, its the only indice that can be the xth number, and thus is the xth number
+    # kill potentials as well     
     for y in range(1, 10):
         if (len(potentialIndices[y]) == 1):
             sudokuAr[potentialIndices[y][0]] = y
@@ -89,6 +111,9 @@ def hiddenSingleCheck(selectAr):
 def checkPuzzle():
     # for every row/col/box
     for x in range(9):
+        #conjPairCheck(rows[x])
+        #conjPairCheck(cols[x])
+        #conjPairCheck(boxes[x])
         hiddenSingleCheck(rows[x])
         hiddenSingleCheck(cols[x])
         hiddenSingleCheck(boxes[x])
@@ -98,6 +123,7 @@ def checkPuzzle():
         if (sudokuAr[x] == 0 and len(potentialsAr[x]) == 1):
             sudokuAr[x] = potentialsAr[x][0]
 
+
 def main():
     #print("Type out or copy a string representing a sudoku puzzle, where squares are in order by column left to right, starting with top row and going down. 'M' represents an empty space.")
     enteredString = ""#input("leave blank or type something wrong and we'll just use the one already typed in as a var")
@@ -105,9 +131,9 @@ def main():
     if len(enteredString) == 81:
         sudokuString = enteredString
     else:
-        #sudokuString = "M9MMMM2MMMMMMM5M8MMM84MMM1MMM6MM13M5M5MMM97M64MM2MMMMMMMMMM2MM9734MMMMMMMMMM6MMMM"
+        sudokuString = "M9MMMM2MMMMMMM5M8MMM84MMM1MMM6MM13M5M5MMM97M64MM2MMMMMMMMMM2MM9734MMMMMMMMMM6MMMM"
         #sudokuString = "M7M3M5MM9MMMMMM1M8MMMM9MMMMM3M4MMMMMM98MM2MM77M4MMM9MMMMMMMMMM5MMM68MM436MMMMMMMM"
-        sudokuString = "378415962429763185561928374832M5749MMM6MMMM5MMMMMMMM18M8MMMMM3MM57M316M9MM3M4MMM7"
+        #sudokuString = "378415962429763185561928374832M5749MMM6MMMM5MMMMMMMM18M8MMMMM3MM57M316M9MM3M4MMM7"
         #sudokuString = "M27154396965M27148341689M525M34682714725M36896189724M578M23591415479M82323984156M"
     convertString(sudokuString)
     printPuzzle()
